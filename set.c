@@ -38,7 +38,7 @@ set_new (void)
 {
   struct Set *set;
 
-  set = malloc (sizeof (struct Set *));
+  set = malloc (sizeof (struct Set));
 
   set->nodes = calloc (sizeof (struct SetNode *), BUCKET_SIZE);
   set->hash_function = hash;
