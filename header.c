@@ -70,6 +70,8 @@ get_header_from_line (char *line)
     return NULL;
 
   end = strchr (quote + 1, '"');
+  if (end == NULL)
+    return NULL;
 
   return strndup (quote + 1, end - quote - 1);
 }
