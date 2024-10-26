@@ -87,7 +87,6 @@ header_read (char       *file,
    * Instead just add it to output */
   if (fp == NULL)
     { 
-      fclose (fp);
       return header;
     }
 
