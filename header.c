@@ -86,10 +86,16 @@ header_read (char       *file,
   /* We don't mind if the file is valid or invalid
    * Instead just add it to output */
   if (fp == NULL)
-    return header;
+    { 
+      fclose (fp);
+      return header;
+    }
 
   if (set_contains (set, file))
-    return header;
+    { 
+      fclose (fp);
+      return header;
+    }
 
   set_add (set, file);
 
@@ -109,6 +115,9 @@ header_read (char       *file,
 
   if (line)
     free (line);
+
+
+  fclose (fp);
 
   return header;
 }
