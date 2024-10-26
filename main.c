@@ -26,7 +26,6 @@ int
 main (int   argc,
       char *argv[])
 {
-  struct Header *header;
   struct Set *set;
 
   set = set_new ();
@@ -34,12 +33,17 @@ main (int   argc,
   if (argc < 2)
     utils_throw_error ("Not enough arguments");
 
-  header = header_read (argv[1], set);
+  for (int i = 1; i < argc; i++)
+    {
+      struct Header *header;
 
-  header_print_tree (header);
+      header = header_read (argv[i], set);
+      header_print_tree (header);
+
+      header_free (header);
+    }
 
   set_free (set);
-  header_free (header);
 
   return 0;
 }
