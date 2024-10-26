@@ -25,10 +25,12 @@
 
 struct Header
 {
-  char *name;
+  char *name;                /* name of header file */
 
-  int n_children;
-  struct Header **children;
+  int height;                /* height of the header inside current tree */
+
+  int n_children;            /* number of files included */
+  struct Header **children;  /* pointer to included files */
 };
 
 struct Header *header_read       (char          *file,

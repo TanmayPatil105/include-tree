@@ -27,6 +27,9 @@
 #include <stdbool.h>
 
 
+#define MAX(a, b) (a > b ? a : b)
+
+
 struct Header *
 header_init (char *name)
 {
@@ -37,6 +40,7 @@ header_init (char *name)
   header->name = strdup (name);
 
   header->n_children = 0;
+  header->height = 1;
   header->children = NULL;
 
   return header;
@@ -78,6 +82,7 @@ header_read (char       *file,
   FILE *fp;
   char *line = NULL;
   size_t len;
+  int height = 1;
 
   header = header_init (file);
 
@@ -101,20 +106,25 @@ header_read (char       *file,
   while (getline (&line, &len, fp) != -1)
     {
       char *inc;
+      struct Header *child;
 
       inc = get_header_from_line (line);
       if (inc == NULL)
         continue;
 
-      /* recursive */
-      header_add_child (header, header_read (inc, set));
+      /* depth-first search */
+      child = header_read (inc, set);
+      header_add_child (header, child);
+
+      height = MAX (height, child->height + 1);
 
       free (inc);
     }
 
+  header->height = height;
+
   if (line)
     free (line);
-
 
   fclose (fp);
 
@@ -159,8 +169,7 @@ header_print_helper (struct Header *header,
 void
 header_print_tree (struct Header *header)
 {
-  /* FIXME: Find a way to get the depth beforehand */
-  bool is_last[50] = { false };
+  bool *is_last = malloc (sizeof (bool) * header->height);
 
   header_print_helper (header, 0, is_last);
 }
