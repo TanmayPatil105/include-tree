@@ -32,6 +32,8 @@ struct SetNode
 
 struct Set
 {
+  int bucket_size;
+
   struct SetNode **nodes;
 
   uint64_t (*hash_function) (char *key);

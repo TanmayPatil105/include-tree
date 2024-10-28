@@ -26,11 +26,6 @@
 /* Hash based implementation
  * which uses value-indexed array technique */
 
-/*
- * These is fairly large amount of memory
- * We rely on the hash function to avoid collisions */
-#define BUCKET_SIZE 1024
-
 static uint64_t hash (char *key);
 
 struct Set *
@@ -40,7 +35,9 @@ set_new (void)
 
   set = malloc (sizeof (struct Set));
 
-  set->nodes = calloc (sizeof (struct SetNode *), BUCKET_SIZE);
+  set->bucket_size = 1024;
+
+  set->nodes = calloc (sizeof (struct SetNode *), set->bucket_size);
   set->hash_function = hash;
 
   return set;
@@ -69,7 +66,7 @@ get_index (struct Set *set,
 {
   int index;
 
-  index = hash % BUCKET_SIZE;
+  index = hash % set->bucket_size;
 
   if (set->nodes[index] == NULL)
     return -1;
@@ -84,7 +81,7 @@ fill_index (struct Set *set,
 {
   int index;
 
-  index = hash % BUCKET_SIZE;
+  index = hash % set->bucket_size;
 
   set->nodes[index] = malloc (sizeof (struct SetNode));
 
@@ -132,7 +129,7 @@ set_node_free (struct SetNode *node)
 void
 set_free (struct Set *set)
 {
-  for (int i = 0; i < BUCKET_SIZE; i++)
+  for (int i = 0; i < set->bucket_size; i++)
     {
       if (set->nodes[i] != NULL)
         set_node_free (set->nodes[i]);
