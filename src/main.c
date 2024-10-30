@@ -1,4 +1,4 @@
-/* utils.c
+/* main.c
  *
  * Copyright 2024 Tanmay Patil <tanmaynpatil105@gmail.com>
  *
@@ -19,56 +19,43 @@
  */
 
 #include "utils.h"
+#include "header.h"
+#include "set.h"
 
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
-#include <stdarg.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-void
-utils_throw_error (char *format, ...)
+int
+main (int   argc,
+      char *argv[])
 {
-  va_list list;
+  struct Set *set;
+  char *cwd;
 
-  va_start (list, format);
+  set = set_new ();
+  cwd = get_current_dir_name ();
 
-  fprintf (stderr, "itree: ");
-  vfprintf (stderr, format, list);
-  fprintf (stderr, "\n");
+  if (argc < 2)
+    utils_throw_error ("Not enough arguments");
 
-  va_end (list);
-
-  exit (EXIT_FAILURE);
-}
-
-char *
-utils_get_absolute_path (char *path)
-{
-  char *abs = NULL;
-  char *ptr = NULL;
-  char *last = NULL;
-
-  ptr = realpath (path, NULL);
-  if (ptr == NULL)
-    return strdup (path);
-
-  last = strrchr (ptr, '/');
-  if (last == NULL)
+  for (int i = 1; i < argc; i++)
     {
-      str_free (ptr);
-      return strdup (path);
+      struct Header *header;
+      char *path;
+
+      path = utils_get_absolute_path (argv[i]);
+
+      header = header_read (path, set);
+      header_rename (header, argv[i]);
+
+      header_print_tree (header);
+
+      /* restore current dir */
+      utils_change_dir (cwd);
+
+      str_free (path);
+      header_free (header);
     }
 
-  abs = strdup (last + 1);
+  str_free (cwd);
+  set_free (set);
 
-  /* change directory to parent */
-  *last = '\0';
-  chdir (ptr);
-
-  str_free (ptr);
-
-  return abs;
+  return 0;
 }

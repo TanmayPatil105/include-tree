@@ -1,4 +1,4 @@
-/* main.c
+/* utils.h
  *
  * Copyright 2024 Tanmay Patil <tanmaynpatil105@gmail.com>
  *
@@ -18,44 +18,24 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-#include "utils.h"
-#include "header.h"
-#include "set.h"
+#ifndef UTILS_H
+#define UTILS_H
 
-int
-main (int   argc,
-      char *argv[])
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <unistd.h>
+
+inline static void
+str_free (char *str)
 {
-  struct Set *set;
-  char *cwd;
-
-  set = set_new ();
-  cwd = get_current_dir_name ();
-
-  if (argc < 2)
-    utils_throw_error ("Not enough arguments");
-
-  for (int i = 1; i < argc; i++)
-    {
-      struct Header *header;
-      char *path;
-
-      path = utils_get_absolute_path (argv[i]);
-
-      header = header_read (path, set);
-      header_rename (header, argv[i]);
-
-      header_print_tree (header);
-
-      /* restore current dir */
-      chdir (cwd);
-
-      str_free (path);
-      header_free (header);
-    }
-
-  str_free (cwd);
-  set_free (set);
-
-  return 0;
+  if (str)
+    free (str);
 }
+
+void  utils_throw_error       (char *format, ...);
+char *utils_get_absolute_path (char *path);
+int  utils_change_dir        (char *dir);
+
+#endif
