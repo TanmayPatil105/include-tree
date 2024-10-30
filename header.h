@@ -35,6 +35,8 @@ struct Header
 
 struct Header *header_read       (char          *file,
                                   struct Set    *set);
+void           header_rename     (struct Header *header,
+                                  char          *new_name);
 void           header_print_tree (struct Header *header);
 void           header_free       (struct Header *header);
 

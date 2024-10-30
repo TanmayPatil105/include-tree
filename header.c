@@ -46,6 +46,16 @@ header_init (char *name)
   return header;
 }
 
+void
+header_rename (struct Header *header,
+               char          *new_name)
+{
+  if (header->name)
+    free (header->name);
+
+  header->name = strdup (new_name);
+}
+
 static void
 header_add_child (struct Header *header,
                   struct Header *child)
@@ -174,6 +184,8 @@ header_print_tree (struct Header *header)
   bool *is_last = malloc (sizeof (bool) * header->height);
 
   header_print_helper (header, 0, is_last);
+
+  free (is_last);
 }
 
 void

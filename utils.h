@@ -21,10 +21,20 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#define _GNU_SOURCE
 #include <stdio.h>
+#include <stdlib.h>
 #include <stddef.h>
+#include <unistd.h>
 
-void utils_throw_error     (char *format, ...);
-char utils_get_next_symbol (void);
+inline static void
+str_free (char *str)
+{
+  if (str)
+    free (str);
+}
+
+void  utils_throw_error       (char *format, ...);
+char *utils_get_absolute_path (char *path);
 
 #endif

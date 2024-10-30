@@ -24,6 +24,9 @@
 #include <errno.h>
 #include <string.h>
 #include <stdarg.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 void
 utils_throw_error (char *format, ...)
@@ -39,4 +42,33 @@ utils_throw_error (char *format, ...)
   va_end (list);
 
   exit (EXIT_FAILURE);
+}
+
+char *
+utils_get_absolute_path (char *path)
+{
+  char *abs = NULL;
+  char *ptr = NULL;
+  char *last = NULL;
+
+  ptr = realpath (path, NULL);
+  if (ptr == NULL)
+    return strdup (path);
+
+  last = strrchr (ptr, '/');
+  if (last == NULL)
+    {
+      str_free (ptr);
+      return strdup (path);
+    }
+
+  abs = strdup (last + 1);
+
+  /* change directory to parent */
+  *last = '\0';
+  chdir (ptr);
+
+  str_free (ptr);
+
+  return abs;
 }

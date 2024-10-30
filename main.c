@@ -27,8 +27,10 @@ main (int   argc,
       char *argv[])
 {
   struct Set *set;
+  char *cwd;
 
   set = set_new ();
+  cwd = get_current_dir_name ();
 
   if (argc < 2)
     utils_throw_error ("Not enough arguments");
@@ -36,13 +38,23 @@ main (int   argc,
   for (int i = 1; i < argc; i++)
     {
       struct Header *header;
+      char *path;
 
-      header = header_read (argv[i], set);
+      path = utils_get_absolute_path (argv[i]);
+
+      header = header_read (path, set);
+      header_rename (header, argv[i]);
+
       header_print_tree (header);
 
+      /* restore current dir */
+      chdir (cwd);
+
+      str_free (path);
       header_free (header);
     }
 
+  str_free (cwd);
   set_free (set);
 
   return 0;
