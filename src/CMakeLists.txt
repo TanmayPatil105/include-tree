@@ -3,6 +3,7 @@ set(SOURCES
     header.c
     set.c
     utils.c
+    args.c
 )
 
 set (CMAKE_C_COMPILER gcc)

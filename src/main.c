@@ -21,13 +21,17 @@
 #include "utils.h"
 #include "header.h"
 #include "set.h"
+#include "args.h"
 
 int
 main (int   argc,
       char *argv[])
 {
+  struct Args *args;
   struct Set *set;
   char *cwd;
+
+  args = args_parse (argc, argv);
 
   set = set_new ();
   cwd = get_current_dir_name ();
@@ -35,15 +39,16 @@ main (int   argc,
   if (argc < 2)
     utils_throw_error ("Not enough arguments");
 
-  for (int i = 1; i < argc; i++)
+  for (int i = 0; i < args->n_files; i++)
     {
       struct Header *header;
       char *path;
+      char *file = args->input[i];
 
-      path = utils_get_absolute_path (argv[i]);
+      path = utils_get_absolute_path (file);
 
       header = header_read (path, set);
-      header_rename (header, argv[i]);
+      header_rename (header, file);
 
       header_print_tree (header);
 
