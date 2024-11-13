@@ -46,6 +46,18 @@ args_init (void)
         ((strcmp (arg, lng) == 0)      \
          || (strcmp (arg, shrt) == 0))
 
+
+static void
+print_help (char *binary)
+{
+  fprintf (stdout, "Usage: %s [input files]\n"
+  "Print file inclusion tree\n"
+  "\n"
+  "Optional arguments:\n"
+  "  -d, --depth             set recursion depth\n"
+  "  -h, --help              display this message\n", binary);
+}
+
 struct Args *
 args_parse (int   argc,
             char *argv[])
@@ -79,7 +91,11 @@ args_parse (int   argc,
         }
     }
 
-
+  if (args->print_help)
+    {
+      print_help (argv[0]);
+      exit (EXIT_SUCCESS);
+    }
   /* WARN: --depth should not be used with --cycle */
 
   return args;
