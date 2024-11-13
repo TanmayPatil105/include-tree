@@ -99,7 +99,7 @@ header_read_helper (char       *file,
 
   header = header_init (file);
 
-  if (depth == 0)
+  if (depth < 0)
     return header;
 
   fp = fopen (file, "r");

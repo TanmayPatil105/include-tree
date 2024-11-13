@@ -37,7 +37,7 @@ args_init (void)
 
   args->print_help = false;
   args->flag_cycle = false;
-  args->depth = UINT_MAX;   /* Infinite depth */
+  args->depth = INT_MAX;   /* Infinite depth */
 
   return args;
 }
