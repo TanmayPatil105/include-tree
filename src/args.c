@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 static struct Args *
 args_init (void)
@@ -36,7 +37,7 @@ args_init (void)
 
   args->print_help = false;
   args->flag_cycle = false;
-  args->depth = -1;   /* Infinite depth */
+  args->depth = UINT_MAX;   /* Infinite depth */
 
   return args;
 }

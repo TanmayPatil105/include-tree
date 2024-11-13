@@ -30,7 +30,7 @@ struct Args
 
   bool print_help;
   bool flag_cycle;         /* NI */
-  bool depth;              /* NI */
+  unsigned int depth;
 };
 
 struct Args *args_parse (int   argc,

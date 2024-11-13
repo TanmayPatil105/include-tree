@@ -47,7 +47,7 @@ main (int   argc,
 
       path = utils_get_absolute_path (file);
 
-      header = header_read (path, set);
+      header = header_read (path, set, args);
       header_rename (header, file);
 
       header_print_tree (header);

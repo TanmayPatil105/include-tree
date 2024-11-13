@@ -22,6 +22,7 @@
 #define HEADER_H
 
 #include "set.h"
+#include "args.h"
 
 struct Header
 {
@@ -34,7 +35,8 @@ struct Header
 };
 
 struct Header *header_read       (char          *file,
-                                  struct Set    *set);
+                                  struct Set    *set,
+                                  struct Args   *args);
 void           header_rename     (struct Header *header,
                                   char          *new_name);
 void           header_print_tree (struct Header *header);

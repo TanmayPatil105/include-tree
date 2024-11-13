@@ -87,8 +87,9 @@ get_header_from_line (char *line)
 }
 
 struct Header *
-header_read (char       *file,
-             struct Set *set)
+header_read_helper (char       *file,
+                    struct Set *set,
+                    int         depth)
 {
   struct Header *header;
   FILE *fp;
@@ -97,6 +98,9 @@ header_read (char       *file,
   int height = 1;
 
   header = header_init (file);
+
+  if (depth == 0)
+    return header;
 
   fp = fopen (file, "r");
 
@@ -125,7 +129,7 @@ header_read (char       *file,
         continue;
 
       /* depth-first search */
-      child = header_read (inc, set);
+      child = header_read_helper (inc, set, depth - 1);
       header_add_child (header, child);
 
       height = MAX (height, child->height + 1);
@@ -142,6 +146,15 @@ header_read (char       *file,
 
   return header;
 }
+
+struct Header *
+header_read (char       *file,
+             struct Set *set,
+             struct Args *args)
+{
+  return header_read_helper (file, set, args->depth);
+}
+
 
 /* Should we use ASCII ?? */
 #define CONTINUE "│   "
