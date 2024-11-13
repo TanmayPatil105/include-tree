@@ -79,5 +79,8 @@ args_parse (int   argc,
         }
     }
 
+
+  /* WARN: --depth should not be used with --cycle */
+
   return args;
 }

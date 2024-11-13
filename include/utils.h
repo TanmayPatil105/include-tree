@@ -35,7 +35,8 @@ str_free (char *str)
 }
 
 void  utils_throw_error       (char *format, ...);
+void  utils_throw_warning     (char *format, ...);
 char *utils_get_absolute_path (char *path);
-int  utils_change_dir        (char *dir);
+int   utils_change_dir        (char *dir);
 
 #endif

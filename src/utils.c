@@ -44,6 +44,20 @@ utils_throw_error (char *format, ...)
   exit (EXIT_FAILURE);
 }
 
+void
+utils_throw_warning (char *format, ...)
+{
+  va_list list;
+
+  va_start (list, format);
+
+  fprintf (stderr, "itree: warning: ");
+  vfprintf (stderr, format, list);
+  fprintf (stderr, "\n");
+
+  va_end (list);
+}
+
 char *
 utils_get_absolute_path (char *path)
 {
