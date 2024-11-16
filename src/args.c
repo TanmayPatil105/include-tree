@@ -101,7 +101,10 @@ args_parse (int   argc,
       print_help (argv[0]);
       exit (EXIT_SUCCESS);
     }
-  /* WARN: --depth should not be used with --cycle */
+
+  if (args->depth != INT_MAX
+      && args->flag_cycle)
+    utils_throw_warning ("the --depth flag should not be used with --cycle");
 
   return args;
 }
