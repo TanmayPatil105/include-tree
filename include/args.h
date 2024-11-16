@@ -29,11 +29,12 @@ struct Args
   char **input;
 
   bool print_help;
-  bool flag_cycle;         /* NI */
+  bool flag_cycle;
   int depth;
 };
 
-struct Args *args_parse (int   argc,
-                         char *argv[]);
+struct Args *args_parse (int          argc,
+                         char        *argv[]);
+void         args_free  (struct Args *args);
 
 #endif

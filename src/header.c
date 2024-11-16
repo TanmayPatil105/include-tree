@@ -29,6 +29,7 @@
 
 #define MAX(a, b) (a > b ? a : b)
 
+struct Set *glob = NULL;
 
 struct Header *
 header_init (char *name)
@@ -41,6 +42,7 @@ header_init (char *name)
 
   header->n_children = 0;
   header->height = 1;
+  header->cyclic_inclusion = false;
   header->children = NULL;
 
   return header;
@@ -89,7 +91,8 @@ get_header_from_line (char *line)
 struct Header *
 header_read_helper (char       *file,
                     struct Set *set,
-                    int         depth)
+                    int         depth,
+                    bool        flag_cycle)
 {
   struct Header *header;
   FILE *fp;
@@ -98,6 +101,13 @@ header_read_helper (char       *file,
   int height = 1;
 
   header = header_init (file);
+
+  /* check for cycle */
+  if (flag_cycle
+      && set_contains (glob, file))
+    {
+      header->cyclic_inclusion = true;
+    }
 
   if (depth < 0)
     return header;
@@ -119,6 +129,9 @@ header_read_helper (char       *file,
 
   set_add (set, file);
 
+  if (flag_cycle)
+    set_add (glob, file);
+
   while (getline (&line, &len, fp) != -1)
     {
       char *inc;
@@ -129,7 +142,7 @@ header_read_helper (char       *file,
         continue;
 
       /* depth-first search */
-      child = header_read_helper (inc, set, depth - 1);
+      child = header_read_helper (inc, set, depth - 1, flag_cycle);
       header_add_child (header, child);
 
       height = MAX (height, child->height + 1);
@@ -142,6 +155,9 @@ header_read_helper (char       *file,
   if (line)
     free (line);
 
+  if (flag_cycle)
+    set_remove (glob, file);
+
   fclose (fp);
 
   return header;
@@ -152,7 +168,22 @@ header_read (char       *file,
              struct Set *set,
              struct Args *args)
 {
-  return header_read_helper (file, set, args->depth);
+  struct Header *top;
+
+  if (args->flag_cycle)
+    glob = set_new ();
+
+  top = header_read_helper (file, set,
+                            args->depth,
+                            args->flag_cycle);
+
+  if (args->flag_cycle)
+    {
+      set_free (glob);
+      glob = NULL;
+    }
+
+  return top;
 }
 
 
@@ -182,6 +213,8 @@ header_print_helper (struct Header *header,
       printf ("%s", is_last[depth - 1] ? LAST : MIDDLE);
     }
 
+  if (header->cyclic_inclusion)
+    printf ("# ");
   printf ("%s\n", header->name);
   for (int i = 0; i < header->n_children; i++)
     {

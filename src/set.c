@@ -26,7 +26,8 @@
 /* Hash based implementation
  * which uses value-indexed array technique */
 
-static uint64_t hash (char *key);
+static uint64_t hash          (char *key);
+static void     set_node_free (struct SetNode *node);
 
 struct Set *
 set_new (void)
@@ -101,6 +102,33 @@ set_add (struct Set *set,
     return;
 
   fill_index (set, hash, key);
+}
+
+static void
+clear_index (struct Set *set,
+             int         index)
+{
+  if (set->nodes[index])
+    {
+      set_node_free (set->nodes[index]);
+      set->nodes[index] = NULL;
+    }
+}
+
+void
+set_remove (struct Set *set,
+            char       *key)
+{
+  int index;
+  uint64_t hash;
+
+  hash = set->hash_function (key);
+
+  index = get_index (set, hash);
+  if (index == -1)
+    return;
+
+  clear_index (set, index);
 }
 
 bool

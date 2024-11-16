@@ -55,6 +55,7 @@ print_help (char *binary)
   "\n"
   "Optional arguments:\n"
   "  -d, --depth             set recursion depth\n"
+  "  -c, --cycle             detect cyclic inclusion\n"
   "  -h, --help              display this message\n", binary);
 }
 
@@ -81,13 +82,17 @@ args_parse (int   argc,
 
           args->depth = atoi (argv[i]);
         }
+      else if (CMP_ARGS (argv[i], "--cycle", "-c"))
+        {
+          args->flag_cycle = true;
+        }
       else
         {
           args->n_files++;
 
           args->input = realloc (args->input, sizeof (char *)
                                               * args->n_files);
-          args->input[args->n_files - 1] = argv[i];
+          args->input[args->n_files - 1] = strdup (argv[i]);
         }
     }
 
@@ -99,4 +104,19 @@ args_parse (int   argc,
   /* WARN: --depth should not be used with --cycle */
 
   return args;
+}
+
+void
+args_free (struct Args *args)
+{
+  for (int i = 0; i < args->n_files; i++)
+    {
+      if (args->input[i])
+        free (args->input[i]);
+    }
+
+  if (args->input)
+    free (args->input);
+
+  free (args);
 }

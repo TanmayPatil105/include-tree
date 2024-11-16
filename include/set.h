@@ -42,6 +42,8 @@ struct Set
 struct Set *set_new      (void);
 void        set_add      (struct Set *set,
                           char       *key);
+void        set_remove   (struct Set *set,
+                          char       *key);
 bool        set_contains (struct Set *set,
                           char       *key);
 void        set_free     (struct Set *set);

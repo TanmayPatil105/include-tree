@@ -24,11 +24,15 @@
 #include "set.h"
 #include "args.h"
 
+#include <stdbool.h>
+
+
 struct Header
 {
   char *name;                /* name of header file */
 
   int height;                /* height of the header inside current tree */
+  bool cyclic_inclusion;     /* boolean to indicate cyclic inclusion */
 
   int n_children;            /* number of files included */
   struct Header **children;  /* pointer to included files */

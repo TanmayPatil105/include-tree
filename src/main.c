@@ -61,6 +61,7 @@ main (int   argc,
 
   str_free (cwd);
   set_free (set);
+  args_free (args);
 
   return 0;
 }
