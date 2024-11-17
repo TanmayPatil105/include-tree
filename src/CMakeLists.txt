@@ -4,6 +4,7 @@ set(SOURCES
     set.c
     utils.c
     args.c
+    log.c
 )
 
 set (CMAKE_C_COMPILER gcc)

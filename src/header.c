@@ -20,6 +20,7 @@
 
 #include "header.h"
 #include "utils.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -194,28 +195,34 @@ header_read (char       *file,
 
 #define LAST     "└── "
 
+#define PADDING  "    "
+
 static void
 header_print_helper (struct Header *header,
                      int            depth,
                      bool          *is_last)
 {
+  LogColor color = COLOR_NONE;
 
   for (int i = 0; i < depth - 1; i++)
     {
       if (is_last[i])
-        printf ("    ");
+        log_str (COLOR_NONE, PADDING);
       else
-        printf (CONTINUE);
+        log_str (COLOR_NONE, CONTINUE);
     }
 
   if (depth > 0)
     {
-      printf ("%s", is_last[depth - 1] ? LAST : MIDDLE);
+      log_str (COLOR_NONE,
+               "%s", is_last[depth - 1] ? LAST : MIDDLE);
     }
 
   if (header->cyclic_inclusion)
-    printf ("# ");
-  printf ("%s\n", header->name);
+    color = COLOR_RED;
+
+  log_str (color, "%s\n", header->name);
+
   for (int i = 0; i < header->n_children; i++)
     {
       is_last[depth] = i == header->n_children - 1;

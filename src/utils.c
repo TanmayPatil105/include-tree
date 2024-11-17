@@ -19,6 +19,7 @@
  */
 
 #include "utils.h"
+#include "log.h"
 
 #include <stdlib.h>
 #include <errno.h>
