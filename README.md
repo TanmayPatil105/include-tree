@@ -6,7 +6,7 @@ This program can be really helpful for debugging and refactoring.
 
 # Usage
 
-```
+```console
 $ itree ipuz-acrostic.c
 ipuz-acrostic.c
 ├── libipuz-config.h
@@ -19,6 +19,28 @@ ipuz-acrostic.c
 ├── acrostic-board-dimensions.h
 └── ipuz-magic.h
     └── ipuz-puzzle.h
+```
+```console
+$ itree app.h --cycle
+app.h
+├── app_utils.h
+│   └── app_error.h
+│       └── app_utils.h (in red)
+├── app_safe.h
+│   ├── app_input.h
+│   └── app_utils.h
+└── app_input.h
+```
+
+```console
+$ itree app.h --depth 1
+app.h
+├── app_utils.h
+│   └── app_error.h
+├── app_safe.h
+│   ├── app_input.h
+│   └── app_utils.h
+└── app_input.h
 ```
 
 ## Build and Install
