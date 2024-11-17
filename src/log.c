@@ -34,7 +34,7 @@ get_color_sequence (LogColor color)
         return "\033[0;31m";
       case COLOR_GREEN:
         return "\033[0;32m";
-			case COLOR_YELLOW:
+      case COLOR_YELLOW:
         return "\033[0;33m";
     }
 
