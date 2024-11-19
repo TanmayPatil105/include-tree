@@ -44,6 +44,7 @@ header_init (char *name)
   header->n_children = 0;
   header->height = 1;
   header->cyclic_inclusion = false;
+  header->greped = false;
   header->children = NULL;
 
   return header;
@@ -89,11 +90,29 @@ get_header_from_line (char *line)
   return strndup (quote + 1, end - quote - 1);
 }
 
+
+static bool
+grep_header (char **greps,
+             char   *file)
+{
+  int i = 0;
+
+  do {
+    if (strcmp (greps[i], file) == 0)
+      return true;
+
+    i++;
+  }  while (greps[i]);
+
+  return false;
+}
+
 struct Header *
 header_read_helper (char       *file,
                     struct Set *set,
                     int         depth,
-                    bool        flag_cycle)
+                    bool        flag_cycle,
+                    char      **greps)
 {
   struct Header *header;
   FILE *fp;
@@ -108,6 +127,12 @@ header_read_helper (char       *file,
       && set_contains (glob, file))
     {
       header->cyclic_inclusion = true;
+    }
+
+  if (greps[0]
+      && grep_header (greps, file))
+    {
+      header->greped = true;
     }
 
   if (depth < 0)
@@ -143,7 +168,8 @@ header_read_helper (char       *file,
         continue;
 
       /* depth-first search */
-      child = header_read_helper (inc, set, depth - 1, flag_cycle);
+      child = header_read_helper (inc, set,
+                                  depth - 1, flag_cycle, greps);
       header_add_child (header, child);
 
       height = MAX (height, child->height + 1);
@@ -176,7 +202,8 @@ header_read (char       *file,
 
   top = header_read_helper (file, set,
                             args->depth,
-                            args->flag_cycle);
+                            args->flag_cycle,
+                            args->greps);
 
   if (args->flag_cycle)
     {
@@ -220,6 +247,8 @@ header_print_helper (struct Header *header,
 
   if (header->cyclic_inclusion)
     color = COLOR_RED;
+  else if (header->greped)
+    color = COLOR_GREEN;
 
   log_str (color, "%s\n", header->name);
 

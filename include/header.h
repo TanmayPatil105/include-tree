@@ -33,6 +33,7 @@ struct Header
 
   int height;                /* height of the header inside current tree */
   bool cyclic_inclusion;     /* boolean to indicate cyclic inclusion */
+  bool greped;
 
   int n_children;            /* number of files included */
   struct Header **children;  /* pointer to included files */

@@ -31,6 +31,8 @@ struct Args
   bool print_help;
   bool flag_cycle;
   int depth;
+
+  char **greps;
 };
 
 struct Args *args_parse (int          argc,

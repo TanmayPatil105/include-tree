@@ -38,6 +38,7 @@ args_init (void)
   args->print_help = false;
   args->flag_cycle = false;
   args->depth = INT_MAX;   /* Infinite depth */
+  args->greps = calloc (1, sizeof (char *));
 
   return args;
 }
@@ -56,6 +57,7 @@ print_help (char *binary)
   "Optional arguments:\n"
   "  -d, --depth             set recursion depth\n"
   "  -c, --cycle             detect cyclic inclusion\n"
+  "  -g, --grep              look for argument file in the output\n"
   "  -h, --help              display this message\n", binary);
 }
 
@@ -64,6 +66,7 @@ args_parse (int   argc,
             char *argv[])
 {
   struct Args *args;
+  int n_grep = 1;
 
   args = args_init ();
 
@@ -85,6 +88,17 @@ args_parse (int   argc,
       else if (CMP_ARGS (argv[i], "--cycle", "-c"))
         {
           args->flag_cycle = true;
+        }
+      else if (CMP_ARGS (argv[i], "--grep", "-g"))
+        {
+          i++;
+          if (i >= argc)
+            utils_throw_error ("args: --depth requires an argument");
+
+          args->greps = realloc (args->greps, sizeof (char *)
+                                              * (n_grep + 1));
+          args->greps[n_grep - 1] = strdup (argv[i]);
+          args->greps[n_grep++] = 0;
         }
       else
         {
@@ -112,6 +126,8 @@ args_parse (int   argc,
 void
 args_free (struct Args *args)
 {
+  int i = 0;
+
   for (int i = 0; i < args->n_files; i++)
     {
       if (args->input[i])
@@ -120,6 +136,15 @@ args_free (struct Args *args)
 
   if (args->input)
     free (args->input);
+
+  while (args->greps[i])
+    {
+      free (args->greps[i]);
+      i++;
+    }
+
+  if (args->greps)
+    free (args->greps);
 
   free (args);
 }
