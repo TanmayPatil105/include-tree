@@ -42,6 +42,17 @@ app.h
 │   └── app_utils.h
 └── app_input.h
 ```
+```console
+$ itree app.h --grep app_safe.h -g app_none.h
+app.h
+├── app_utils.h
+│   └── app_error.h
+│       └── app_utils.h
+├── app_safe.h (in green)
+│   ├── app_input.h
+│   └── app_utils.h
+└── app_input.h
+```
 
 ## Build and Install
 
