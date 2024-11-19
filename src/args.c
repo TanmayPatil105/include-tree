@@ -112,6 +112,7 @@ args_parse (int   argc,
 
   if (args->print_help)
     {
+      args_free (args);
       print_help (argv[0]);
       exit (EXIT_SUCCESS);
     }
