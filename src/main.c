@@ -55,6 +55,9 @@ main (int   argc,
       /* restore current dir */
       utils_change_dir (cwd);
 
+      if (args->independent)
+        set_clear (set);
+
       str_free (path);
       header_free (header);
     }

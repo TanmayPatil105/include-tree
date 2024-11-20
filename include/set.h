@@ -46,6 +46,7 @@ void        set_remove   (struct Set *set,
                           char       *key);
 bool        set_contains (struct Set *set,
                           char       *key);
+void        set_clear    (struct Set *set);
 void        set_free     (struct Set *set);
 
 

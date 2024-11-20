@@ -27,6 +27,7 @@ struct Args
 {
   int n_files;
   char **input;
+  bool independent;
 
   bool print_help;
   bool flag_cycle;

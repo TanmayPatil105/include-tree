@@ -145,6 +145,20 @@ set_contains (struct Set *set,
   return false;
 }
 
+
+void
+set_clear (struct Set *set)
+{
+  for (int i = 0; i < set->bucket_size; i++)
+    {
+      if (set->nodes[i] != NULL)
+			  {
+          set_node_free (set->nodes[i]);
+          set->nodes[i] = NULL;
+        }
+    }
+}
+
 static void
 set_node_free (struct SetNode *node)
 {

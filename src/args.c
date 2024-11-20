@@ -58,6 +58,7 @@ print_help (char *binary)
   "  -d, --depth             set recursion depth\n"
   "  -c, --cycle             detect cyclic inclusion\n"
   "  -g, --grep              look for argument file in the output\n"
+  "  -i, --independent       run independent search for each file input\n"
   "  -h, --help              display this message\n", binary);
 }
 
@@ -99,6 +100,10 @@ args_parse (int   argc,
                                               * (n_grep + 1));
           args->greps[n_grep - 1] = strdup (argv[i]);
           args->greps[n_grep++] = 0;
+        }
+      else if (CMP_ARGS (argv[i], "--independent", "-i"))
+        {
+          args->independent = true;
         }
       else
         {
