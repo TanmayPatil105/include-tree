@@ -53,6 +53,41 @@ app.h
 │   └── app_utils.h
 └── app_input.h
 ```
+```console
+$ itree *.h
+app.h
+├── app_utils.h
+│   └── app_error.h
+│       └── app_utils.h
+├── app_safe.h
+│   ├── app_input.h
+│   └── app_utils.h
+└── app_input.h
+app_error.h
+app_safe.h
+app_utils.h
+
+$ itree *.h --independent
+app.h
+├── app_utils.h
+│   └── app_error.h
+│       └── app_utils.h
+├── app_safe.h
+│   ├── app_input.h
+│   └── app_utils.h
+└── app_input.h
+app_error.h
+└── app_utils.h
+    └── app_error.h
+app_safe.h
+├── app_input.h
+└── app_utils.h
+    └── app_error.h
+        └── app_utils.h
+app_utils.h
+└── app_error.h
+    └── app_utils.h
+```
 
 ## Build and Install
 
