@@ -76,7 +76,15 @@ get_header_from_line (char *line)
 {
   char *quote, *end;
 
-  if (strncmp (line, "#include", 8) != 0)
+  if (*line != '#')
+    return NULL;
+  else
+    line++;
+
+  while (line && *line == ' ')
+    line++;
+
+  if (strncmp (line, "include ", 8) != 0)
     return NULL;
 
   quote = strchr (line, '"');
