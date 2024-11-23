@@ -223,7 +223,6 @@ header_read (char       *file,
 }
 
 
-/* Should we use ASCII ?? */
 #define CONTINUE "│   "
 
 #define MIDDLE   "├── "
@@ -271,7 +270,9 @@ header_print_helper (struct Header *header,
 void
 header_print_tree (struct Header *header)
 {
-  bool *is_last = malloc (sizeof (bool) * header->height);
+  bool *is_last;
+
+  is_last = malloc (sizeof (bool) * header->height);
 
   header_print_helper (header, 0, is_last);
 
