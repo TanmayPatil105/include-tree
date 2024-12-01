@@ -1,6 +1,7 @@
 TARGET = itree
-SRCS = *.c
-OBJS = $(SRCS:.c=.o)
+SRCS = src/*.c
+INCLUDES = include/
+OBJS = *.o
 
 INSTALL = /usr/bin/install -c -D
 BIN_DIR = /bin
@@ -14,7 +15,7 @@ all: $(TARGET)
 
 $(OBJS): $(SRCS)
 	for SRC in $(SRCS); do \
-		$(CC) $(CCFLAGS) -c $$SRC; \
+		$(CC) $(CCFLAGS) -c $$SRC -I $(INCLUDES); \
 	done
 
 $(TARGET): $(OBJS)
