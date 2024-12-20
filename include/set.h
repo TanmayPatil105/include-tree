@@ -33,6 +33,7 @@ struct SetNode
 struct Set
 {
   int bucket_size;
+  int n_nodes;
 
   struct SetNode **nodes;
 

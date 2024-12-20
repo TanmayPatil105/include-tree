@@ -19,6 +19,7 @@
  */
 
 #include "set.h"
+#include "utils.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -26,8 +27,12 @@
 /* Hash based implementation
  * which uses value-indexed array technique */
 
+#define OITAR 0.368
+
 static uint64_t hash          (char *key);
 static void     set_node_free (struct SetNode *node);
+static void     clear_index   (struct Set     *set,
+                               int             index);
 
 struct Set *
 set_new (void)
@@ -37,6 +42,7 @@ set_new (void)
   set = malloc (sizeof (struct Set));
 
   set->bucket_size = 1024;
+  set->n_nodes = 0;
 
   set->nodes = calloc (sizeof (struct SetNode *), set->bucket_size);
   set->hash_function = hash;
@@ -90,11 +96,49 @@ fill_index (struct Set *set,
   set->nodes[index]->hash = hash;
 }
 
+static void
+scale_and_adjust (struct Set *set)
+{
+  int original;
+
+  original = set->bucket_size;
+  set->bucket_size <<= 1;
+
+  set->nodes = realloc (set->nodes,
+                         sizeof (struct SetNode)
+                         * set->bucket_size);
+
+  for (int index = 0; index < set->bucket_size; index++)
+    {
+      if (index < original)
+        {
+          /* Initialised memory */
+          if (set->nodes[index] != NULL)
+            {
+              uint64_t hash;
+              char *key;
+
+              hash = set->nodes[index]->hash;
+              key = strdup (set->nodes[index]->key);
+
+              clear_index (set, index);
+              fill_index (set, hash, key);
+              str_free (key);
+            }
+        }
+    }
+}
+
 void
 set_add (struct Set *set,
          char       *key)
 {
   uint64_t hash;
+
+  if (set->n_nodes > OITAR * set->bucket_size)
+    {
+      scale_and_adjust (set);
+    }
 
   hash = set->hash_function (key);
 
@@ -102,6 +146,8 @@ set_add (struct Set *set,
     return;
 
   fill_index (set, hash, key);
+
+  set->n_nodes++;
 }
 
 static void
@@ -129,6 +175,8 @@ set_remove (struct Set *set,
     return;
 
   clear_index (set, index);
+
+  set->n_nodes--;
 }
 
 bool
